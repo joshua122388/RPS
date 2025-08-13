@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Encuestas por SourceCodester</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-poll"></i>
+                <span>Encuestas de RPS para team building</span>
+            </div>
+            <button class="btn btn-primary" id="createPollBtn">
+                <i class="fas fa-plus"></i> Crear Encuesta
+            </button>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="active">Encuestas Activas</div>
+            <div class="tab" data-tab="completed">Encuestas Completadas</div>
+        </div>
+
+        <div class="tab-content active" id="active-tab">
+            <div id="activePollsContainer">
+                <!-- Active polls will be dynamically added here -->
+            </div>
+
+            <div class="empty-state" id="activeEmptyState">
+                <i class="fas fa-poll-h"></i>
+                <h3>No hay encuestas activas</h3>
+                <p>Actualmente no hay encuestas activas. Crea una nueva encuesta para comenzar.</p>
+                <button class="btn btn-primary" id="createPollEmptyBtn">
+                    <i class="fas fa-plus" ></i> Crear Encuesta
+                </button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="completed-tab">
+            <div id="completedPollsContainer">
+                <!-- Completed polls will be dynamically added here -->
+            </div>
+
+            <div class="empty-state" id="completedEmptyState">
+                <i class="fas fa-archive"></i>
+                <h3>No hay encuestas completadas</h3>
+                <p>Las encuestas completadas aparecerán aquí una vez finalizadas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Poll Modal -->
+    <div class="modal" id="createPollModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Crear Nueva Encuesta</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="pollForm">
+                <div class="form-group">
+                    <label for="pollTitle" class="form-label">Título de la Encuesta</label>
+                    <input type="text" id="pollTitle" class="form-control" placeholder="Ingresa el título de la encuesta" required>
+                </div>
+                <div class="form-group">
+                    <label for="pollDescription" class="form-label">Descripción (Opcional)</label>
+                    <textarea id="pollDescription" class="form-control" rows="3" placeholder="Ingresa la descripción de la encuesta"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="pollDeadline" class="form-label">Fecha límite para votar</label>
+                    <input type="date" id="pollDeadline" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Opciones de la Encuesta</label>
+                    <div id="pollOptionsContainer">
+                        <div class="participant-item" style="margin-bottom: 0.5rem;">
+                            <input type="text" class="form-control option-input" placeholder="Ingresa el texto de la opción" required>
+                            <button type="button" class="action-btn delete remove-option">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="participant-item" style="margin-bottom: 0.5rem;">
+                            <input type="text" class="form-control option-input" placeholder="Ingresa el texto de la opción" required>
+                            <button type="button" class="action-btn delete remove-option">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline" id="addOptionBtn" style="margin-top: 0.5rem;">
+                        <i class="fas fa-plus"></i> Agregar Opción
+                    </button>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> Crear Encuesta
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Voter Name Modal -->
+    <div class="modal voter-modal" id="voterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Emite tu Voto</h3>
+                <button class="modal-close" id="closeVoterModal">&times;</button>
+            </div>
+            <form id="voterForm">
+                <div class="form-group">
+                    <label for="voterName" class="form-label">Tu Nombre</label>
+                    <input type="text" id="voterName" class="form-control" placeholder="Ingresa tu nombre" required>
+                    <small class="text-muted">Esto se usará para rastrear tu voto</small>
+                </div>
+                <input type="hidden" id="selectedPollId">
+                <input type="hidden" id="selectedOptionIndex">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-vote-yea"></i> Enviar Voto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">¡Encuesta creada exitosamente!</span>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
