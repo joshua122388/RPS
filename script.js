@@ -76,14 +76,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function saveVoteToFirebase(pollId, voterName, optionIndex) {
         try {
-            // Update poll votes
+            console.log('Saving vote:', { pollId, voterName, optionIndex });
+            
+            // Get fresh poll data from Firebase
             const pollRef = db.collection('polls').doc(pollId);
-            const poll = polls.find(p => p.id === pollId);
-            if (poll) {
-                poll.options[optionIndex].votes++;
-                await pollRef.update({
-                    options: poll.options
-                });
+            const pollDoc = await pollRef.get();
+            
+            if (!pollDoc.exists) {
+                throw new Error('Poll not found');
+            }
+            
+            const pollData = pollDoc.data();
+            console.log('Poll data:', pollData);
+            
+            // Validate optionIndex
+            if (!pollData.options || optionIndex >= pollData.options.length || optionIndex < 0) {
+                throw new Error('Invalid option index');
+            }
+            
+            // Ensure votes property exists
+            if (typeof pollData.options[optionIndex].votes !== 'number') {
+                pollData.options[optionIndex].votes = 0;
+            }
+            
+            // Update vote count
+            pollData.options[optionIndex].votes++;
+            
+            // Update poll in Firebase
+            await pollRef.update({
+                options: pollData.options
+            });
+
+            // Update local polls array
+            const localPoll = polls.find(p => p.id === pollId);
+            if (localPoll) {
+                localPoll.options = pollData.options;
             }
 
             // Update voters
@@ -100,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('¡Voto registrado exitosamente!', 'success');
         } catch (error) {
             console.error('Error saving vote:', error);
-            showToast('Error al registrar el voto', 'error');
+            showToast('Error al registrar el voto: ' + error.message, 'error');
         }
     }
 
@@ -382,7 +409,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const optionIndex = parseInt(selectedOption.id.split('_')[3]);
+            // Parse option index correctly - format is "option_pollId_index"
+            const idParts = selectedOption.id.split('_');
+            const optionIndex = parseInt(idParts[idParts.length - 1]); // Get the last part
+            
+            console.log('Selected option ID:', selectedOption.id);
+            console.log('Parsed option index:', optionIndex);
             
             // Show voter modal
             selectedPollIdInput.value = pollId;
