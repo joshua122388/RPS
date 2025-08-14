@@ -62,12 +62,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function savePollToFirebase(poll) {
         try {
+            console.log('=== CREATING POLL ===');
+            console.log('Poll to save:', poll);
+            console.log('Poll options:', poll.options);
+            
             const docRef = await db.collection('polls').add(poll);
             poll.id = docRef.id;
             polls.push(poll);
             renderPolls();
             updateEmptyStates();
             showToast('Encuesta creada exitosamente', 'success');
+            console.log('Poll saved with ID:', poll.id);
         } catch (error) {
             console.error('Error saving poll:', error);
             showToast('Error al crear la encuesta', 'error');
@@ -76,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function saveVoteToFirebase(pollId, voterName, optionIndex) {
         try {
+            console.log('=== SAVING VOTE DEBUG ===');
             console.log('Saving vote:', { pollId, voterName, optionIndex });
             
             // Get fresh poll data from Firebase
@@ -87,20 +93,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const pollData = pollDoc.data();
-            console.log('Poll data:', pollData);
+            console.log('Poll data from Firebase:', pollData);
+            console.log('Poll options:', pollData.options);
+            console.log('Option at index', optionIndex, ':', pollData.options[optionIndex]);
             
             // Validate optionIndex
             if (!pollData.options || optionIndex >= pollData.options.length || optionIndex < 0) {
-                throw new Error('Invalid option index');
+                throw new Error(`Invalid option index. Index: ${optionIndex}, Options length: ${pollData.options ? pollData.options.length : 'undefined'}`);
             }
             
-            // Ensure votes property exists
+            // Check if the option exists
+            if (!pollData.options[optionIndex]) {
+                throw new Error(`Option at index ${optionIndex} does not exist`);
+            }
+            
+            // Initialize votes property if it doesn't exist
             if (typeof pollData.options[optionIndex].votes !== 'number') {
+                console.log('Initializing votes property for option', optionIndex);
                 pollData.options[optionIndex].votes = 0;
             }
             
+            console.log('Current votes for option', optionIndex, ':', pollData.options[optionIndex].votes);
+            
             // Update vote count
             pollData.options[optionIndex].votes++;
+            console.log('New votes count:', pollData.options[optionIndex].votes);
             
             // Update poll in Firebase
             await pollRef.update({
@@ -125,8 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             renderPolls();
             showToast('¡Voto registrado exitosamente!', 'success');
+            console.log('=== VOTE SAVED SUCCESSFULLY ===');
         } catch (error) {
             console.error('Error saving vote:', error);
+            console.error('Error details:', error.message);
             showToast('Error al registrar el voto: ' + error.message, 'error');
         }
     }
