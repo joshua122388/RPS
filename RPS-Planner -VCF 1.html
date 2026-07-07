@@ -1,0 +1,793 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+							<style>
+								body {
+									background-color: white; /* Ensure the iframe has a white background */
+								}
+
+								
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VCF Tools</title>
+  <style>
+    :root{--bg:#f8f9fa;--panel:#ffffff;--muted:#6c757d;--text:#333333;--accent:#0076CE;--accent-hover:#005a9e;--success:#28a745;--border:#dee2e6;--danger:#dc3545;--dell-blue:#0076CE}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f8f9fa,#e9ecef);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+    .container{max-width:1400px;margin:0 auto;padding:20px}
+    .header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;margin-bottom:20px;border-bottom:2px solid var(--dell-blue)}
+    .dell-logo{font-size:1.8rem;font-weight:700;color:var(--dell-blue);letter-spacing:-0.5px}
+    .header-right{text-align:right}
+    .header-title{font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:5px}
+    .header-link{color:#A00000;text-decoration:none;font-size:0.9em;display:block;font-weight:600}
+    .header-link:hover{text-decoration:underline}
+    .header-link-blue{color:#0076CE;text-decoration:none;font-size:0.9em;display:block;margin-top:5px;font-weight:600}
+    .header-link-blue:hover{text-decoration:underline}
+    .release-note{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:15px;margin-bottom:20px;color:#856404}
+    .release-note-title{font-weight:600;margin-bottom:5px}
+    .nav{display:flex;gap:10px;margin-bottom:30px;flex-wrap:wrap}
+    .nav button{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:12px 24px;cursor:pointer;font-size:16px;transition:all 0.3s ease;font-weight:500}
+    .nav button:hover{border-color:var(--dell-blue);background:rgba(0,118,206,0.05)}
+    .nav button.active{background:var(--dell-blue);color:#ffffff;border-color:var(--dell-blue)}
+    .section{display:none}.section.active{display:block}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}
+    .card-link{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:40px;text-decoration:none;color:var(--text);transition:all 0.3s ease;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer}
+    .card-link:hover{transform:translateY(-3px);border-color:var(--dell-blue);box-shadow:0 4px 16px rgba(0,118,206,0.15)}
+    .card-icon{font-size:4rem;margin-bottom:20px}
+    .card-title{font-size:1.5rem;font-weight:600;margin-bottom:10px;color:var(--dell-blue)}
+    .card-description{color:var(--muted);font-size:0.95rem}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:24px}
+    h1{margin:.2em 0 .4em;color:var(--dell-blue)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .grow{flex:1 1 280px}
+    .input,select,button,textarea{background:#ffffff;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:10px 12px;font-size:14px;font-family:inherit}
+    .input:focus,select:focus,textarea:focus{outline:none;border-color:var(--dell-blue);box-shadow:0 0 0 3px rgba(0,118,206,0.1)}
+    button{cursor:pointer;font-weight:500}
+    button.primary{background:var(--dell-blue);color:#ffffff;border:0}
+    button.primary:hover{background:var(--accent-hover)}
+    button.success{background:var(--success);color:#ffffff;border:0}
+    button.success:hover{background:#218838}
+    .muted{color:var(--muted)}
+    .kpis{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+    .kpi{flex:1 1 160px;background:#f8f9fa;border:1px solid var(--border);border-radius:6px;padding:12px}
+    .kpi .label{font-size:12px;color:var(--muted);font-weight:500}
+    .kpi .value{font-size:18px;font-weight:600;color:var(--dell-blue)}
+    .table-wrap{max-height:65vh;overflow:auto;border:1px solid var(--border);border-radius:6px;background:#ffffff}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    thead th{position:sticky;top:0;background:#f8f9fa;z-index:1;color:var(--text);font-weight:600;border-bottom:2px solid var(--border)}
+    th,td{border-bottom:1px solid var(--border);padding:10px 8px;text-align:left;vertical-align:top}
+    tbody tr:nth-child(odd){background:#f8f9fa}
+    tbody tr:hover{background:rgba(0,118,206,0.05)}
+    .stack{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .err{border:1px solid var(--danger);background:#fff5f5;color:var(--danger);border-radius:6px;padding:12px;margin:.5rem 0;display:none}
+    .result-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+    .combined-layout{display:flex;gap:0;margin-top:20px;border:1px solid var(--border);border-radius:8px;overflow:hidden;min-height:500px}
+    .sidebar-tabs{display:flex;flex-direction:column;min-width:175px;max-width:175px;background:#f0f4f8;border-right:2px solid var(--border);flex-shrink:0}
+    .sidebar-tab{background:transparent;color:var(--text);border:none;border-bottom:1px solid var(--border);border-radius:0;padding:14px 12px;cursor:pointer;font-size:13px;font-weight:500;text-align:left;transition:all 0.2s;line-height:1.4;width:100%}
+    .sidebar-tab:hover{background:rgba(0,118,206,0.08);color:var(--dell-blue)}
+    .sidebar-tab.active{background:var(--dell-blue);color:#fff}
+    .tab-panels{flex:1;padding:24px;background:#fff;min-width:0;overflow:auto}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+    .accordion{margin-top:20px}
+    .accordion-item{background:var(--panel);border:1px solid var(--border);border-radius:8px;margin-bottom:15px;overflow:hidden}
+    .accordion-header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;cursor:pointer;background:#f8f9fa;transition:background 0.3s}
+    .accordion-header:hover{background:rgba(0,118,206,0.05)}
+    .accordion-header h3{margin:0;color:var(--dell-blue);font-size:1.1em}
+    .accordion-header .toggle{font-size:1.4em;color:var(--dell-blue);transition:transform 0.3s}
+    .accordion-item.open .accordion-header .toggle{transform:rotate(180deg)}
+    .accordion-content{display:none;padding:20px}
+    .accordion-item.open .accordion-content{display:block}
+    .parallel-bar{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#f0f7ff;border:1px solid #b3d4f5;border-radius:6px;margin-bottom:18px;flex-wrap:wrap}
+    .parallel-bar label.par-label{font-weight:600;color:var(--dell-blue);font-size:14px;margin:0;white-space:nowrap}
+    .toggle-switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:24px;transition:.3s}
+    .toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+    .toggle-switch input:checked + .toggle-slider{background:var(--dell-blue)}
+    .toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px)}
+    .parallel-note{font-size:12px;color:var(--muted);margin:0}
+    pre{white-space:pre-wrap}
+    @media(max-width:800px){.header{align-items:flex-start;gap:16px;flex-direction:column}.header-right{text-align:left}.combined-layout{flex-direction:column}.sidebar-tabs{max-width:none;min-width:0;width:100%;flex-direction:row;overflow:auto}.sidebar-tab{min-width:150px}}
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;">
+      <div class="dell-logo">Dell Technologies</div>
+      <div style="font-size:0.8em;margin-top:5px;">
+        <a href="mailto:james.russell4@dell.com" style="color:#0076CE;text-decoration:none;">Contact james.russell4@dell.com for any queries</a>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-title">VMware Cloud Foundation on VxRail</div>
+      <a href="https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-5-2-and-earlier/5-2/vcf-release-notes.html" target="_blank" class="header-link" rel="noopener">VCF Release Notes</a>
+      <a href="https://www.dell.com/support/manuals/en-us/vxrail-v-series-nodes/vxr_p_vcf_release-notes-5.0/what-is-new-in-vcf-5.2.2-on-vxrail-8.0.370?guid=guid-cdf5c32d-fa83-488b-b583-daedc52d3494&amp;lang=en-us" target="_blank" class="header-link-blue" rel="noopener">VCF on VxRail Release Notes</a>
+    </div>
+  </header>
+  <div class="release-note">
+    <div class="release-note-title">&#9888; Important</div>
+    <div>Please ensure you read the release notes of the version you are upgrading to and ensure the compatibility/Upgrade path is supported</div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn active" data-section="home">Home Page</button>
+    <button class="nav-btn" data-section="combined">TC | Planning</button>
+    <button class="nav-btn" data-section="toolbox">VCF on VxRail Toolbox</button>
+    <button class="nav-btn" data-section="bundles">VxRail Bundles</button>
+  </nav>
+  <section id="home" class="section active">
+    <h1>VCF Tools</h1>
+    <div class="cards">
+      <div class="card-link" onclick="showSection('combined')">
+        <div class="card-icon">&#128295;</div>
+        <div class="card-title">TC | Planning</div>
+        <div class="card-description">Upload your VCF Summary to access both Upgrade Planner and Calculator</div>
+      </div>
+      <div class="card-link" onclick="showSection('toolbox')">
+        <div class="card-icon">&#129520;</div>
+        <div class="card-title">VCF on VxRail Toolbox</div>
+        <div class="card-description">Additional tools and resources for VCF on VxRail management</div>
+      </div>
+      <div class="card-link" onclick="showSection('bundles')">
+        <div class="card-icon">&#128230;</div>
+        <div class="card-title">VxRail Bundles</div>
+        <div class="card-description">Bundle versions for VxRail</div>
+      </div>
+    </div>
+  </section>
+  <section id="combined" class="section">
+    <div class="card">
+      <h1>&#128295; TC | Planning</h1>
+      <p class="muted">Upload your VCF Summary file once to see both Upgrade Planner and Calculator results</p>
+      <div id="err" class="err"></div>
+      <div id="calcErr" class="err"></div>
+      <div class="row" style="margin:.4rem 0 0">
+        <input id="vcfFile" class="input grow" type="file" accept=".txt,.log,.out,.json,.cfg,.conf,.ini,.yaml,.yml,.md,.csv,.tsv" />
+        <button id="pasteSample" type="button">Paste text&hellip;</button>
+        <button id="vcfClear" type="button">Clear</button>
+        <span style="flex:1 1 60px"></span>
+        <label style="white-space:nowrap">Target profile:
+          <select id="targetProfile" class="input">
+            <option value="none" selected>&#8212; None &#8212;</option>
+            <option value="v91">9.1</option>
+            <option value="u3i">8.0.380 / 3i</option>
+            <option value="u3h">8.0.370 / 3h</option>
+            <option value="u3g">8.0.361 / 3g</option>
+            <option value="u3e">8.0.331 / 3e</option>
+          </select>
+        </label>
+      </div>
+      <div id="v91Warning" style="background:#fff3cd;border:1px solid #ffc107;color:#856404;border-radius:6px;padding:12px;margin:.5rem 0;display:none;">
+        &#9888; Minimum version you must be on is 5.2 on 8.0.300 before upgrading to 9.1
+      </div>
+      <div id="kpis" class="kpis" style="display:none;">
+        <div class="kpi"><div class="label">SDDC Manager</div><div class="value" id="kpi_sddc">&#8212;</div></div>
+        <div class="kpi"><div class="label">VxRail version</div><div class="value" id="kpi_sddc_build">&#8212;</div></div>
+        <div class="kpi"><div class="label">Total Clusters</div><div class="value" id="kpi_clusters">&#8212;</div></div>
+      </div>
+      <div class="stack" id="vcfActions" style="display:none;">
+        <button id="copyToEmail" class="success" type="button">&#128203; Copy All to Email</button>
+      </div>
+      <div id="combinedLayout" class="combined-layout" style="display:none;">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab active" onclick="showTab('tcTab',this)">&#128203; TC Template</button>
+          <button class="sidebar-tab" onclick="showTab('plannerTab',this)">&#128295; VCF Upgrade Planner</button>
+          <button class="sidebar-tab" onclick="showTab('calculatorTab',this)">&#129518; Upgrade Calculator</button>
+          <button class="sidebar-tab" onclick="showTab('verbalTab',this)">&#10003; Verbal Checks</button>
+          <button class="sidebar-tab" onclick="showTab('issuesTab',this)">&#9888; Issues &amp; Escalations</button>
+        </div>
+        <div class="tab-panels">
+          <div class="tab-panel active" id="tcTab">
+            <h3 style="color:var(--dell-blue);margin-top:0;">&#128203; Technical Consultant Template</h3>
+            <div style="background:#f8f9fa;padding:20px;border-radius:8px;border:1px solid var(--border);overflow-x:auto;">
+              <table id="tcTemplateTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#fff;">
+                <thead><tr style="background:#0076CE;color:white;"><th style="border:1px solid #000;padding:8px;font-weight:normal;width:35%;">Activity</th><th style="border:1px solid #000;padding:8px;font-weight:normal;">Technical Consultation</th></tr></thead>
+                <tbody>
+                  <tr><td style="border:1px solid #000;padding:8px;">Schedule</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Start Date Time of the upgrade including timezone"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Upgrade SR Number</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SR_Number"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Assigned Engineers</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="RPS_Engineer_Email"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Can Upgrade Proceed</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Notes</td><td style="border:1px solid #000;padding:8px;">Please find the details of the issues below and an action plan for the same.</td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Agreed Download Code</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Code Upgrade Path: Source Version to Target Version"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Upgrade Method</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Sequential / Parallel" value="Sequential"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Total Estimated Time for Upgrade</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="xx hours"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Evidence &#8211; Logs, outputs, errors</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">SN#</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="DE600xxxxxxxxx"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;background:#ffe0b2;font-weight:600;">Tech-consult Checklist</td><td style="border:1px solid #000;padding:8px;background:#ffe0b2;"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Number of WLD's (Including MGMT)</td><td style="border:1px solid #000;padding:8px;"><input type="number" class="input" style="width:100%;" value="1"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Node Count</td><td style="border:1px solid #000;padding:8px;"><input type="number" class="input" style="width:100%;" value="4"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;background:#c8e6c9;font-weight:600;">Essential Checks</td><td style="border:1px solid #000;padding:8px;background:#c8e6c9;"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">BOM Compatible</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">vcfcheck executed?</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">vcfverify executed? (VoV only)</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Async patched site?</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Code download method (Online or Offline)</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Offline/Online"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Was a code download initiated?</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">All bundles downloaded</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Bundles uploaded to SDDC (only for offline)</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Pending / Yes / No" value="Pending"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;background:#bbdefb;font-weight:600;">Environmental</td><td style="border:1px solid #000;padding:8px;background:#bbdefb;"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Number of witness nodes</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="None, 1, 2 etc"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">NSX Federation</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">SDDC Federation</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Aria Enabled</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Stretched Cluster</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Tanzu Enabled</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;background:#ffe0b2;font-weight:600;">4.x to 5.x Upgrade Requirements</td><td style="border:1px solid #000;padding:8px;background:#ffe0b2;"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Customer informed about Temporary IP address for vCenter?</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Customer has license ready for vSAN and vSphere 8?</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;background:#c8e6c9;font-weight:600;">4.x to 5.x Upgrade Checks</td><td style="border:1px solid #000;padding:8px;background:#c8e6c9;"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Verify vSAN HCL database is up-to-date</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Yes/No/N/A"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Required Passwords</td><td style="border:1px solid #000;padding:8px;">Please make sure that you have the below passwords before the date of the upgrade:<br><br>&#8226; myvmware account<br>&#8226; DellEMC support account<br>&#8226; VxRail Manager mystic &amp; root<br>&#8226; vCenter administrator &amp; root<br>&#8226; PSC root (if internal vCenter, 3.x only)<br>&#8226; ESXi Node root<br>&#8226; iDRAC root or equivalent</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-panel" id="plannerTab">
+            <h3 style="color:var(--dell-blue);margin-top:0;">&#128295; VCF Upgrade Planner</h3>
+            <div class="table-wrap">
+              <table id="vcfTable"><thead></thead><tbody></tbody></table>
+            </div>
+          </div>
+          <div class="tab-panel" id="calculatorTab">
+            <h3 style="color:var(--dell-blue);margin-top:0;">&#129518; Upgrade Calculator</h3>
+            <div class="parallel-bar">
+              <label class="par-label" for="parallelToggle">Parallel Upgrade:</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="parallelToggle">
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="parallelLabel" style="font-weight:600;font-size:14px;color:#6c757d;">No</span>
+              <span class="parallel-note">When enabled, NSX Host VIB upgrades and ESXi/VxRail Manager upgrades run in parallel per domain (only the longest of the two counts).</span>
+            </div>
+            <div id="domainResults"></div>
+            <div style="margin-top:24px;padding:20px;background:rgba(0,118,206,0.05);border-radius:8px;border:2px solid var(--dell-blue);">
+              <div style="font-weight:600;font-size:1.2em;margin-bottom:10px;color:var(--dell-blue);">Total Estimated Time</div>
+              <div id="resTotal" style="font-size:1.5em;color:var(--dell-blue);">&#8212;</div>
+            </div>
+            <div style="margin-top:16px;padding:15px;background:#fff3cd;border-radius:8px;border:1px solid #ffc107;">
+              <div style="color:#856404;font-size:0.9em;">&#9888; VCF on VxRail upgrades frequently encounter challenges. Depending on the size and complexity of the environment, additional hours should be included as contingency.</div>
+            </div>
+          </div>
+          <div class="tab-panel" id="verbalTab">
+            <h3 style="color:var(--dell-blue);margin-top:0;">&#10003; Verbal Confirmation Checks</h3>
+            <div style="background:#f8f9fa;padding:20px;border-radius:8px;border:1px solid var(--border);">
+              <p style="margin-top:0;font-weight:600;">Are the following components present:</p>
+              <table id="verbalChecksTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#fff;">
+                <thead>
+                  <tr style="background:#0076CE;color:white;">
+                    <th style="border:1px solid #000;padding:8px;font-weight:normal;width:20%;">Component</th>
+                    <th style="border:1px solid #000;padding:8px;font-weight:normal;width:15%;">Status</th>
+                    <th style="border:1px solid #000;padding:8px;font-weight:normal;">Additional Information</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="border:1px solid #000;padding:8px;">Tanzu</td><td style="border:1px solid #000;padding:8px;"><select class="input verbal-check-select" data-component="tanzu" style="width:100%;"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="na">N/A</option></select></td><td style="border:1px solid #000;padding:8px;" class="verbal-check-info" data-component="tanzu"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">vRealize</td><td style="border:1px solid #000;padding:8px;"><select class="input verbal-check-select" data-component="vrealize" style="width:100%;"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="na">N/A</option></select></td><td style="border:1px solid #000;padding:8px;" class="verbal-check-info" data-component="vrealize"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">RP4VM</td><td style="border:1px solid #000;padding:8px;"><select class="input verbal-check-select" data-component="rp4vm" style="width:100%;"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="na">N/A</option></select></td><td style="border:1px solid #000;padding:8px;" class="verbal-check-info" data-component="rp4vm"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Cloudlink</td><td style="border:1px solid #000;padding:8px;"><select class="input verbal-check-select" data-component="cloudlink" style="width:100%;"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="na">N/A</option></select></td><td style="border:1px solid #000;padding:8px;" class="verbal-check-info" data-component="cloudlink"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;">Avamar / IDPA</td><td style="border:1px solid #000;padding:8px;"><select class="input verbal-check-select" data-component="avamar" style="width:100%;"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="na">N/A</option></select></td><td style="border:1px solid #000;padding:8px;" class="verbal-check-info" data-component="avamar"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-panel" id="issuesTab">
+            <h3 style="color:var(--dell-blue);margin-top:0;">&#9888; Issues &amp; Escalations</h3>
+            <div style="background:#f8f9fa;padding:20px;border-radius:8px;border:1px solid var(--border);overflow-x:auto;">
+              <table id="issuesTable" border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;background:#fff;">
+                <thead><tr style="background:#0076CE;color:white;"><th style="border:1px solid #000;padding:8px;font-weight:normal;width:12%;">Date/Time (GMT)</th><th style="border:1px solid #000;padding:8px;font-weight:normal;width:5%;">Issue No</th><th style="border:1px solid #000;padding:8px;font-weight:normal;width:13%;">Stage</th><th style="border:1px solid #000;padding:8px;font-weight:normal;width:13%;">Origin</th><th style="border:1px solid #000;padding:8px;font-weight:normal;width:42%;">Issues</th><th style="border:1px solid #000;padding:8px;font-weight:normal;width:10%;">Status</th></tr></thead>
+                <tbody id="issuesTableBody">
+                  <tr><td style="border:1px solid #000;padding:8px;"><input type="datetime-local" class="input" style="width:100%;"></td><td style="border:1px solid #000;padding:8px;">1</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Tech Consult / Pre-Checks / Upgrade / Post Checks"></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SDDC / vCenter / VCFverify / VCFcheck"></td><td style="border:1px solid #000;padding:8px;"><textarea class="input" style="width:100%;min-height:80px;" placeholder="Error in GUI:&#10;Error from logs:&#10;Resolution:&#10;Reference Doc/KB:"></textarea></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Resolved / Pending / Ignore"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;"><input type="datetime-local" class="input" style="width:100%;"></td><td style="border:1px solid #000;padding:8px;">2</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Tech Consult / Pre-Checks / Upgrade / Post Checks"></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SDDC / vCenter / VCFverify / VCFcheck"></td><td style="border:1px solid #000;padding:8px;"><textarea class="input" style="width:100%;min-height:80px;" placeholder="Error in GUI:&#10;Error from logs:&#10;Resolution:&#10;Reference Doc/KB:"></textarea></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Resolved / Pending / Ignore"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;"><input type="datetime-local" class="input" style="width:100%;"></td><td style="border:1px solid #000;padding:8px;">3</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Tech Consult / Pre-Checks / Upgrade / Post Checks"></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SDDC / vCenter / VCFverify / VCFcheck"></td><td style="border:1px solid #000;padding:8px;"><textarea class="input" style="width:100%;min-height:80px;" placeholder="Error in GUI:&#10;Error from logs:&#10;Resolution:&#10;Reference Doc/KB:"></textarea></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Resolved / Pending / Ignore"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;"><input type="datetime-local" class="input" style="width:100%;"></td><td style="border:1px solid #000;padding:8px;">4</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Tech Consult / Pre-Checks / Upgrade / Post Checks"></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SDDC / vCenter / VCFverify / VCFcheck"></td><td style="border:1px solid #000;padding:8px;"><textarea class="input" style="width:100%;min-height:80px;" placeholder="Error in GUI:&#10;Error from logs:&#10;Resolution:&#10;Reference Doc/KB:"></textarea></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Resolved / Pending / Ignore"></td></tr>
+                  <tr><td style="border:1px solid #000;padding:8px;"><input type="datetime-local" class="input" style="width:100%;"></td><td style="border:1px solid #000;padding:8px;">5</td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Tech Consult / Pre-Checks / Upgrade / Post Checks"></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="SDDC / vCenter / VCFverify / VCFcheck"></td><td style="border:1px solid #000;padding:8px;"><textarea class="input" style="width:100%;min-height:80px;" placeholder="Error in GUI:&#10;Error from logs:&#10;Resolution:&#10;Reference Doc/KB:"></textarea></td><td style="border:1px solid #000;padding:8px;"><input type="text" class="input" style="width:100%;" placeholder="Resolved / Pending / Ignore"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="vcfActionsBottom" style="display:none;margin-top:16px;">
+        <button id="copyToEmailBottom" class="success" type="button">&#128203; Copy All to Email</button>
+      </div>
+    </div>
+  </section>
+  <section id="toolbox" class="section">
+    <div class="card">
+      <h1>&#129520; VCF on VxRail Toolbox</h1>
+      <p class="muted">Additional tools and resources for VCF on VxRail management</p>
+      <div class="accordion">
+        <div class="accordion-item" id="sddcAccordion">
+          <div class="accordion-header" onclick="toggleAccordion('sddcAccordion')"><h3>&#128295; SDDC Toolbox</h3><span class="toggle">&#9660;</span></div>
+          <div class="accordion-content">
+            <a href="https://dell.sharepoint.com/sites/RemoteProactiveVCFOnVxRail/Shared%20Documents/SDDC%20Toolbox/SDDC-Toolbox-1.0.6.zip" target="_blank" rel="noopener" style="display:inline-block;padding:10px 20px;background:var(--dell-blue);color:#fff;border-radius:4px;font-weight:500;text-decoration:none;margin-bottom:20px;">Download latest SDDC ToolBox</a>
+            <h3 style="color:var(--dell-blue);">How to run SDDC Assistant:</h3>
+            <p><strong>&#9888; Take a snapshot of the SDDC Manager VM before using this tool.</strong></p>
+            <h4>1. Unzip:</h4>
+            <pre style="background:#333;color:#eee;padding:15px;border-radius:4px;overflow-x:auto;font-size:13px;">root@vvxrail-sddc [ /home/vcf ]# unzip SDDCassistant_1.0.1.zip</pre>
+            <h4>2. Enter directory and set permissions:</h4>
+            <pre style="background:#333;color:#eee;padding:15px;border-radius:4px;overflow-x:auto;font-size:13px;">cd SDDCassistant/
+chmod a+x SDDCAssistant.sh</pre>
+            <h4>3. Run:</h4>
+            <pre style="background:#333;color:#eee;padding:15px;border-radius:4px;overflow-x:auto;font-size:13px;">./SDDCAssistant.sh</pre>
+            <div style="padding:15px;background:#fff3cd;border-radius:8px;border:1px solid #ffc107;color:#856404;margin-top:10px;"><strong>Note:</strong> Please ensure you have a valid snapshot of the SDDC Manager VM before running any scripts.</div>
+          </div>
+        </div>
+        <div class="accordion-item" id="vcfVerifyAccordion">
+          <div class="accordion-header" onclick="toggleAccordion('vcfVerifyAccordion')"><h3>&#9989; VCF Verify</h3><span class="toggle">&#9660;</span></div>
+          <div class="accordion-content">
+            <a href="https://central.dell.com/solutions/VCF_Verify" target="_blank" rel="noopener" style="display:inline-block;padding:10px 20px;background:var(--dell-blue);color:#fff;border-radius:4px;font-weight:500;text-decoration:none;margin-bottom:20px;">Download VCF Verify</a>
+            <h3 style="color:var(--dell-blue);">Running VCF-Verify:</h3>
+            <pre style="background:#333;color:#eee;padding:15px;border-radius:4px;overflow-x:auto;font-size:13px;">mkdir -m 777 /tmp/vcfv
+cd /tmp/vcfv
+sudo ./vcfverify.sh</pre>
+            <p><strong>Reference:</strong> <a href="https://www.dell.com/support/kbdoc/en-ie/000190574" target="_blank" rel="noopener" style="color:var(--dell-blue);">VxRail How to Run the VCF Verify Tool (KB 000190574)</a></p>
+          </div>
+        </div>
+        <div class="accordion-item" id="vxVerifyAccordion">
+          <div class="accordion-header" onclick="toggleAccordion('vxVerifyAccordion')"><h3>&#9989; VxVerify</h3><span class="toggle">&#9660;</span></div>
+          <div class="accordion-content">
+            <a href="https://central.dell.com/solutions/VxVerify" target="_blank" rel="noopener" style="display:inline-block;padding:10px 20px;background:var(--dell-blue);color:#fff;border-radius:4px;font-weight:500;text-decoration:none;margin-bottom:20px;">Download VxVerify</a>
+            <p>VxVerify is included in the VCF-Verify package. The correct script is selected automatically based on your VxRail version.</p>
+            <p><strong>Reference:</strong> <a href="https://www.dell.com/support/kbdoc/000021527" target="_blank" rel="noopener" style="color:var(--dell-blue);">VxVerify Tool (KB 000021527)</a></p>
+          </div>
+        </div>
+        <div class="accordion-item" id="vxRailToolboxAccordion">
+          <div class="accordion-header" onclick="toggleAccordion('vxRailToolboxAccordion')"><h3>&#129520; VxRail ToolBox</h3><span class="toggle">&#9660;</span></div>
+          <div class="accordion-content">
+            <a href="https://dellservices.lightning.force.com/lightning/r/Lightning_Knowledge__kav/ka0Do000000TsyNIAS/related/AttachedContentDocuments/view" target="_blank" rel="noopener" style="display:inline-block;padding:10px 20px;background:var(--dell-blue);color:#fff;border-radius:4px;font-weight:500;text-decoration:none;margin-bottom:20px;">Download VxRail ToolBox</a>
+            <p><strong>Reference:</strong> <a href="https://www.dell.com/support/kbdoc/000214621" target="_blank" rel="noopener" style="color:var(--dell-blue);">VxRail ToolBox (KB 000214621)</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="bundles" class="section">
+    <div class="card">
+      <h1>&#128230; VxRail Bundles</h1>
+      <p class="muted">Bundle versions for VxRail</p>
+      <div class="accordion">
+        <div class="accordion-item" id="vxrailBundleAccordion">
+          <div class="accordion-header" onclick="toggleAccordion('vxrailBundleAccordion')"><h3>&#128640; VxRail</h3><span class="toggle">&#9660;</span></div>
+          <div class="accordion-content">
+            <div style="background:#fff;padding:15px;border-radius:4px;border:1px solid var(--border);" id="bundleList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+'use strict';
+const bundleItems = [
+  ['VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip','https://dl.dell.com/downloads/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip'],
+  ['VxRail-8.0.370-Composite-Upgrade-Slim-Package-for-7.0.x.zip','https://dl.dell.com/downloads/5DPKH_VxRail-8.0.370-Composite-Upgrade-Slim-Package-for-7.0.x.zip'],
+  ['VxRail-8.0.370-Composite-Upgrade-Slim-Package-for-8.0.x.zip','https://dl.dell.com/downloads/C375Y_VxRail-8.0.370-Composite-Upgrade-Slim-Package-for-8.0.x.zip'],
+  ['VxRail-8.0.361-Composite-Upgrade-Slim-Package-for-7.0.x.zip','https://dl.dell.com/downloads/29GJN_VxRail-8.0.361-Composite-Upgrade-Slim-Package-for-7.0.x.zip'],
+  ['VxRail-8.0.361-Composite-Upgrade-Slim-Package-for-8.0.x.zip','https://dl.dell.com/downloads/678HH_VxRail-8.0.361-Composite-Upgrade-Slim-Package-for-8.0.x.zip'],
+  ['VxRail-8.0.331-Composite-Upgrade-Slim-Package-for-7.0.x.zip','https://dl.dell.com/downloads/3WGH0_VxRail-8.0.331-Composite-Upgrade-Slim-Package-for-7.0.x.zip'],
+  ['VxRail-8.0.331-Composite-Upgrade-Slim-Package-for-8.0.x.zip','https://dl.dell.com/downloads/X0KG3_VxRail-8.0.331-Composite-Upgrade-Slim-Package-for-8.0.x.zip']
+];
+function el(id){ return document.getElementById(id); }
+function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function showError(id,msg){ const box=el(id); if(!box) return; box.textContent=msg; box.style.display=msg?'block':'none'; }
+function copyToClipboard(text){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>alert('Link copied!')).catch(()=>fallbackCopy(text));
+  }else{ fallbackCopy(text); }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); alert('Link copied!'); }catch(e){ alert('Copy failed.'); }
+  ta.remove();
+}
+function renderBundles(){
+  const list=el('bundleList'); if(!list) return;
+  list.innerHTML=bundleItems.map(([name,url],idx)=>`<div style="margin-bottom:${idx===bundleItems.length-1?'0':'12px'};padding:10px;background:#f8f9fa;border-radius:4px;"><div style="font-weight:600;margin-bottom:8px;">${escapeHtml(name)}</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><a href="${escapeHtml(url)}" target="_blank" rel="noopener" style="padding:8px 16px;background:var(--dell-blue);color:#fff;border-radius:4px;font-weight:500;text-decoration:none;font-size:13px;">Download</a><button onclick="copyToClipboard('${escapeHtml(url)}')" style="padding:8px 16px;border:1px solid var(--border);border-radius:4px;font-weight:500;font-size:13px;cursor:pointer;">Copy Link</button></div></div>`).join('');
+}
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const section=el(id); if(section) section.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.section===id));
+}
+function showTab(panelId, btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-tab').forEach(b=>b.classList.remove('active'));
+  const panel=el(panelId); if(panel) panel.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function toggleAccordion(id){ const item=el(id); if(item) item.classList.toggle('open'); }
+const verbalCheckInfo = {
+  tanzu:{yes:'<strong>Handling guide</strong><br>VCF upgrades with Tanzu may require the vCenter to be upgraded first. Refer to the below KBs:<br><br><a href="https://kb.vmware.com/s/article/92227" target="_blank" rel="noopener">KB 92227</a><br><a href="https://kb.vmware.com/s/article/88962" target="_blank" rel="noopener">KB 88962</a><br><br>Additionally, the customer may need to upgrade Tanzu Manager.'},
+  vrealize:{yes:'<strong>If vRealize is present, check compatibility and inform the customer if upgrade is required.</strong><br><br><a href="https://knowledge.broadcom.com/external/article?legacyId=88829" target="_blank" rel="noopener">Broadcom KB 88829</a><br><a href="https://interopmatrix.broadcom.com/Interoperability" target="_blank" rel="noopener">Interop Matrix</a>'},
+  rp4vm:{yes:'<strong>VxRail/RP4VM Compatibility</strong><br><a href="https://dell.sharepoint.com/sites/RemoteProactiveVxRail/SitePages/RP4VM.aspx" target="_blank" rel="noopener">RP4VM SharePoint</a><br><br><strong>RP4VM Support for VxRail 8.x code:</strong><br><a href="https://dell.sharepoint.com/sites/RemoteProactiveVxRail/SitePages/RP4VM-Support-for-VxRail-8.x-code.aspx" target="_blank" rel="noopener">RP4VM 8.x SharePoint</a>'},
+  cloudlink:{yes:'<strong>Check CloudLink and other encryption solutions. Ensure the compatibility. Refer to CloudLink Compatibility Guide for detailed steps.</strong>'},
+  avamar:{yes:'<strong>If not compatible, the customer will need to upgrade in advance of the VCF upgrade.</strong>'}
+};
+function initialiseVerbalChecks(){
+  document.querySelectorAll('.verbal-check-select').forEach(sel=>{
+    sel.addEventListener('change',()=>{
+      const component=sel.dataset.component;
+      const infoCell=document.querySelector('.verbal-check-info[data-component="'+component+'"]');
+      if(!infoCell) return;
+      infoCell.innerHTML=(sel.value==='yes' && verbalCheckInfo[component]) ? verbalCheckInfo[component].yes : '';
+    });
+  });
+}
+const TARGETS = {
+  u3i: {
+    'SDDC Manager': {version: '5.2.3', build: '25219033'},
+    'NSX': {version: '4.2.3.3', build: '25171318'},
+    'vCenter': {version: '8.0 Update 3i', build: '25197330'},
+    'VxRail Manager': {version: '8.0.380', build: '29553947'},
+    'ESXi': {version: '8.0 Update 3i', build: '25205845'},
+  },
+  u3h: {
+    'SDDC Manager': {version: '5.2.2', build: '24936865'},
+    'NSX': {version: '4.2.3.3', build: '25171318'},
+    'vCenter': {version: '8.0.3.00700', build: '25092719'},
+    'VxRail Manager': {version: '8.0.370', build: '29422450'},
+    'ESXi': {version: '8.0 U3H', build: '25067014'},
+  },
+  u3g: {
+    'SDDC Manager': {version: '5.2.2', build: '24936865'},
+    'NSX': {version: '4.2.3.2', build: '25077145'},
+    'vCenter': {version: '8.0.3.00600', build: '24853646'},
+    'VxRail Manager': {version: '8.0.361', build: '29253789'},
+    'ESXi': {version: '8.0 Update 3g', build: '24859861'},
+  },
+  u3e: {
+    'SDDC Manager': {version: '5.2.1.2', build: '24690695'},
+    'NSX': {version: '4.2.2', build: '24730888'},
+    'vCenter': {version: '8.0 U3e', build: '24674346'},
+    'VxRail Manager': {version: '8.0.331', build: '29160392'},
+    'ESXi': {version: '8.0 U3e', build: '24674464'},
+  },
+  v91: {
+    'SDDC Manager': {version: '9.1.0.0', build: '25371088'},
+    'NSX': {version: '9.1.0.0', build: '25318225'},
+    'vCenter': {version: '9.1.0.0', build: '25370922'},
+    'VxRail Manager': {version: '9.1', build: '29670272'},
+    'ESXi': {version: '9.1.0.0', build: '25370933'},
+  },
+};
+const PRODUCT_ORDER_HEAD = ['NSX','vCenter'];
+let parsedState={sddc:'—',vxrail:'—',clusters:[]};
+let lastParsed = null;
+function findVersion(text, labels){
+  for(const label of labels){
+    const re=new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:=]\\s*([^\\r\\n,;]+)','i');
+    const m=text.match(re); if(m) return m[1].trim();
+  }
+  return '—';
+}
+function parseAndRender(text){
+  try{
+    const lines = text.split(/\r?\n/);
+    const domains = [];
+    let sddcVerFull = (text.match(/SDDC Version:\s*([\w.\-]+)/)?.[1]) || '';
+    let totClusters = (text.match(/Total No of Clusters:\s*(\d+)/)?.[1]) || '';
+    let mgmtDomain = '';
+    let stretchedCluster = text.includes('Stretched Cluster: True');
+    let cur = null;
+    for(const raw of lines){
+      const line = raw;
+      let m;
+      if(/\bName:\s*/.test(line)){
+        const name = (line.match(/Name:\s*(.+)/)||[])[1];
+        if(cur) domains.push(cur);
+        cur = { name: (name||'').trim(), clusterCount: 1, clusterHosts: [], nsxEdgeNodes: 0 };
+        continue;
+      }
+      if(cur){
+        if((m = line.match(/Domain Type:\s*(.+)/))){ cur.type = m[1].trim(); if(/^MANAGEMENT/i.test(cur.type)) mgmtDomain = cur.name; continue; }
+        if((m = line.match(/No of Clusters:\s*(\d+)/))){ cur.clusterCount = parseInt(m[1],10) || 1; continue; }
+        if((m = line.match(/vCENTER Version:\s*([\w.]+)-(\d+)/))){ cur.vcenter = { ver:m[1], build:m[2] }; continue; }
+        if((m = line.match(/Esxi Version:\s*([\w.]+)-(\d+)/))){ cur.esxi = { ver:m[1], build:m[2] }; continue; }
+        if((m = line.match(/NSX Version:\s*([\w.]+)-(\d+)/))){ cur.nsx = { ver:m[1], build:m[2] }; continue; }
+        if((m = line.match(/VxRail Version:\s*([\w.\-]+)/))){ const p=m[1].split('-'); cur.vxrail = { ver:p[0], build:p[1]||'' }; continue; }
+        if((m = line.match(/#\s*of\s*Hosts:\s*(\d+)/i))){ cur.clusterHosts.push(parseInt(m[1],10)); continue; }
+        if((m = line.match(/NSX\s*Edge\s*(?:Nodes?|Count)\s*[:=]\s*(\d+)/i))){ cur.nsxEdgeNodes = parseInt(m[1],10); continue; }
+      }
+    }
+    if(cur) domains.push(cur);
+    let sddc = null;
+    if(sddcVerFull){ const ix=sddcVerFull.indexOf('-'); sddc = { ver: ix>0? sddcVerFull.slice(0,ix): sddcVerFull, build: ix>0? sddcVerFull.slice(ix+1): '' }; }
+    lastParsed = { domains, sddc, totClusters, mgmtDomain, stretchedCluster };
+    if(sddc){ el('kpi_sddc').textContent=sddc.ver;
+      let vxrailVersion = '—';
+      for(const d of domains){
+        if(d.vxrail && d.vxrail.ver){ vxrailVersion = d.vxrail.ver; break; }
+      }
+      el('kpi_sddc_build').textContent = vxrailVersion;
+    }
+    if(totClusters){ el('kpi_clusters').textContent=String(totClusters); }
+    ['kpis','vcfActions','vcfActionsBottom','combinedLayout'].forEach(id=>{ const node=el(id); if(node) node.style.display=id==='combinedLayout'?'flex':'flex'; });
+    renderTable(lastParsed);
+  }catch(err){ showError('err','Parse error: '+ (err&&err.message? err.message : String(err))); }
+}
+function renderTable(parsed){
+  try{
+    showError('err','');
+    const profileKey = el('targetProfile') ? el('targetProfile').value : 'none';
+    const target = TARGETS[profileKey] || {};
+    const hasTarget = profileKey !== 'none' && Object.keys(target).length > 0;
+    const headers = hasTarget
+      ? ['Domain','Product','Current Version','Current Build','Target Version','Target Build','Status']
+      : ['Domain','Product','Current Version','Current Build'];
+    const table=el('vcfTable'); if(!table) return;
+    table.querySelector('thead').innerHTML=''; table.querySelector('tbody').innerHTML='';
+    const trh=document.createElement('tr'); headers.forEach(h=>{ const th=document.createElement('th'); th.textContent=h; trh.appendChild(th); }); table.querySelector('thead').appendChild(trh);
+    const domains = parsed.domains.slice();
+    const mgmtName = parsed.mgmtDomain || '';
+    domains.sort((a,b)=>{
+      const grpA = (a.type && /^MANAGEMENT/i.test(a.type)) || (a.name===mgmtName) ? 0 : 1;
+      const grpB = (b.type && /^MANAGEMENT/i.test(b.type)) || (b.name===mgmtName) ? 0 : 1;
+      if(grpA !== grpB) return grpA - grpB;
+      return a.name.localeCompare(b.name);
+    });
+    const frag=document.createDocumentFragment();
+    domains.forEach(d=>{
+      const isMgmt = (d.type && /^MANAGEMENT/i.test(d.type)) || (d.name===mgmtName);
+      if(isMgmt && parsed.sddc){ appendRow(frag, d.name, 'SDDC Manager', 'SDDC Manager', parsed.sddc.ver, parsed.sddc.build, target, hasTarget); }
+      const headItems = [];
+      if(d.nsx) headItems.push({prod:'NSX', key:'NSX', ver:d.nsx.ver, build:d.nsx.build});
+      if(d.vcenter) headItems.push({prod:'vCenter', key:'vCenter', ver:d.vcenter.ver, build:d.vcenter.build});
+      headItems.sort((a,b)=> PRODUCT_ORDER_HEAD.indexOf(a.prod)-PRODUCT_ORDER_HEAD.indexOf(b.prod));
+      headItems.forEach(it=> appendRow(frag, d.name, it.prod, it.key, it.ver, it.build, target, hasTarget));
+      const n = Math.max(1, d.clusterCount||0);
+      const vx = d.vxrail ? {ver:d.vxrail.ver, build:d.vxrail.build} : null;
+      const es = d.esxi ? {ver:d.esxi.ver, build:d.esxi.build} : null;
+      for(let i=0;i<n;i++){
+        if(vx) appendRow(frag, d.name, 'VxRail Manager', 'VxRail Manager', vx.ver, vx.build, target, hasTarget);
+        if(es){
+          const N = Array.isArray(d.clusterHosts) && d.clusterHosts[i]>0 ? d.clusterHosts[i] : null;
+          const prodLabel = (N) ? `ESXi (0/${N})` : 'ESXi';
+          appendRow(frag, d.name, prodLabel, 'ESXi', es.ver, es.build, target, hasTarget);
+          if(parsed.stretchedCluster) appendRow(frag, d.name, 'Witness', 'ESXi', es.ver, es.build, target, hasTarget);
+        }
+      }
+    });
+    table.querySelector('tbody').appendChild(frag);
+    el('vcfActions').style.display='flex';
+  }catch(err){ showError('err','Render error: '+ (err&&err.message? err.message : String(err))); }
+}
+function appendRow(frag, domain, prodDisplay, lookupKey, ver, build, target, hasTarget){
+  const tr=document.createElement('tr');
+  const tgt = (target && target[lookupKey]) ? target[lookupKey] : {};
+  if(hasTarget){
+    let status = 'Pending';
+    if((ver && tgt.version && ver === tgt.version) ||
+       (build && tgt.build && build === tgt.build)) {
+      status = 'Already upgraded';
+    }
+    [domain, prodDisplay, ver||'', build||'', tgt.version||'', tgt.build||'', status].forEach(v=>{
+      const td=document.createElement('td');
+      td.textContent = v;
+      if(v === 'Already upgraded'){ td.style.color = '#28a745'; td.style.fontWeight = '600'; }
+      if(v === 'Pending'){ td.style.color = '#dc3545'; td.style.fontWeight = '600'; }
+      tr.appendChild(td);
+    });
+  } else {
+    [domain, prodDisplay, ver||'', build||''].forEach(v=>{
+      const td=document.createElement('td');
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+  }
+  frag.appendChild(tr);
+}
+function formatMinutes(total){
+  if(total <= 0) return '0 mins';
+  const h=Math.floor(total/60), m=total%60;
+  if(h>0 && m>0) return h+'h '+m+'m';
+  if(h>0) return h+'h';
+  return m+' mins';
+}
+function formatHours(total){
+  const hrs = (total/60).toFixed(1);
+  return hrs + ' hours';
+}
+function calculateUpgradeTime(){
+  const domainResultsDiv = el('domainResults'); if(!domainResultsDiv) return;
+  const parallelToggle = el('parallelToggle');
+  const isParallel = !!parallelToggle?.checked;
+  el('parallelLabel').textContent = isParallel ? 'Yes' : 'No';
+  el('parallelLabel').style.color = isParallel ? '#0076CE' : '#6c757d';
+  domainResultsDiv.innerHTML = '';
+  const domains = lastParsed && lastParsed.domains ? lastParsed.domains : [];
+  if(domains.length === 0){ el('resTotal').textContent = '—'; return; }
+  let grandTotalSequential = 0;
+  let grandTotalParallel   = 0;
+  domains.forEach((domain, index) => {
+    const isMgmt = (domain.type && /^MANAGEMENT/i.test(domain.type))
+                 || (domain.name === (lastParsed.mgmtDomain||''))
+                 || index === 0;
+    const clusterCount  = Math.max(domain.clusterCount || 1, 1);
+    const clusterHosts  = domain.clusterHosts || [];
+    const nsxEdgeNodes  = domain.nsxEdgeNodes || 0;
+    const hostsPerCluster = [];
+    for(let c = 0; c < clusterCount; c++){
+      hostsPerCluster.push(clusterHosts[c] > 0 ? clusterHosts[c] : 4);
+    }
+    const totalHosts = hostsPerCluster.reduce((s,h) => s+h, 0);
+    const vcfverifyTime   = isMgmt ? 60 : 0;
+    const sddcTime        = isMgmt ? 60 : 0;
+    const nsxMgrTime      = domain.nsx ? (30 * 3) : 0;
+    const nsxEdgeTime     = nsxEdgeNodes * 15;
+    const vcTime          = domain.vcenter ? 80 : 0;
+    let nsxHostVibTotal = 0;
+    const nsxHostVibPerCluster = [];
+    if(domain.nsx){
+      for(let c = 0; c < clusterCount; c++){
+        const t = 15 * hostsPerCluster[c];
+        nsxHostVibPerCluster.push(t);
+        nsxHostVibTotal += t;
+      }
+    }
+    const vxrmPerCluster = domain.vxrail ? 130 : 0;
+    const vxrmTotal      = vxrmPerCluster * clusterCount;
+    let esxiTotal = 0;
+    const esxiPerCluster = [];
+    if(domain.esxi){
+      for(let c = 0; c < clusterCount; c++){
+        const t = 90 * hostsPerCluster[c];
+        esxiPerCluster.push(t);
+        esxiTotal += t;
+      }
+    }
+    const coreTime       = vcfverifyTime + sddcTime + nsxMgrTime + nsxEdgeTime + vcTime;
+    const nsxClusterTime = nsxHostVibTotal;
+    const esxiGroupTime  = vxrmTotal + esxiTotal;
+    const seqTotal = coreTime + nsxClusterTime + esxiGroupTime;
+    const parTotal = coreTime + Math.max(nsxClusterTime, esxiGroupTime);
+    grandTotalSequential += seqTotal;
+    grandTotalParallel   += parTotal;
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,0.05);';
+    let html = '<div style="font-weight:600;font-size:1.08em;color:var(--dell-blue);margin-bottom:12px;">'
+             + escapeHtml(domain.name) + ' (' + clusterCount + ' cluster' + (clusterCount!==1?'s':'')
+             + ', ' + totalHosts + ' hosts)</div>';
+    html += '<table style="width:100%;border-collapse:collapse;margin-bottom:10px;">';
+    html += '<thead><tr style="background:#f0f4f8;"><th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);font-size:13px;">Component</th>'
+          + '<th style="text-align:right;padding:6px 8px;border-bottom:2px solid var(--border);font-size:13px;">Time/Unit</th>'
+          + '<th style="text-align:right;padding:6px 8px;border-bottom:2px solid var(--border);font-size:13px;">× Count</th>'
+          + '<th style="text-align:right;padding:6px 8px;border-bottom:2px solid var(--border);font-size:13px;">Total</th></tr></thead><tbody>';
+    function addRow(label, perUnit, count, total, highlight){
+      const bg = highlight ? 'background:rgba(0,118,206,0.04);' : '';
+      html += '<tr style="'+bg+'"><td style="padding:5px 8px;border-bottom:1px solid var(--border);font-size:13px;">'+label+'</td>'
+            + '<td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:right;font-size:13px;">'+perUnit+' mins</td>'
+            + '<td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:right;font-size:13px;">'+count+'</td>'
+            + '<td style="padding:5px 8px;border-bottom:1px solid var(--border);text-align:right;font-size:13px;font-weight:600;">'+total+' mins</td></tr>';
+    }
+    if(isMgmt){
+      addRow('vcfverify + vcfcheck', 60, 1, vcfverifyTime);
+      addRow('SDDC Manager (+ GUI Precheck)', 60, 1, sddcTime);
+    }
+    if(domain.nsx){
+      addRow('NSX Manager (+ GUI Precheck)', 30, 3, nsxMgrTime);
+      addRow('NSX Edge Clusters', 15, nsxEdgeNodes, nsxEdgeTime);
+      for(let c = 0; c < clusterCount; c++){
+        addRow('NSX Host Cluster '+(c+1)+' (VIB Upgrade)', 15, hostsPerCluster[c], nsxHostVibPerCluster[c], true);
+      }
+    }
+    if(domain.vcenter){
+      addRow('vCenter (+ GUI Precheck)', 80, 1, vcTime);
+    }
+    for(let c = 0; c < clusterCount; c++){
+      if(domain.vxrail) addRow('VxRail Manager Cluster '+(c+1)+' (+ GUI Precheck)', 130, 1, vxrmPerCluster);
+      if(domain.esxi)   addRow('ESXi (VxRail Nodes) Cluster '+(c+1), 90, hostsPerCluster[c], esxiPerCluster[c]);
+    }
+    html += '</tbody></table>';
+    html += '<div style="background:#f8f9fa;border-radius:6px;padding:12px;margin-top:8px;">';
+    html += '<div class="result-row" style="font-weight:600;"><span>Core (sequential)</span><span>'+formatMinutes(coreTime)+'</span></div>';
+    html += '<div class="result-row"><span style="color:var(--muted);">NSX Host Clusters (can run parallel)</span><span>'+formatMinutes(nsxClusterTime)+'</span></div>';
+    html += '<div class="result-row"><span style="color:var(--muted);">ESXi + VxRail Mgr (can run parallel)</span><span>'+formatMinutes(esxiGroupTime)+'</span></div>';
+    html += '<div class="result-row" style="margin-top:8px;padding:10px;background:rgba(0,118,206,0.08);border-radius:6px;font-weight:600;border-bottom:none;">'
+          + '<span style="color:var(--dell-blue);">Domain Sequential Total</span>'
+          + '<span style="color:var(--dell-blue);">'+formatMinutes(seqTotal)+' ('+formatHours(seqTotal)+')</span></div>';
+    html += '<div class="result-row" style="padding:10px;background:rgba(40,167,69,0.08);border-radius:6px;font-weight:600;border-bottom:none;">'
+          + '<span style="color:#28a745;">Domain Parallel Total</span>'
+          + '<span style="color:#28a745;">'+formatMinutes(parTotal)+' ('+formatHours(parTotal)+')</span></div>';
+    html += '</div>';
+    card.innerHTML = html;
+    domainResultsDiv.appendChild(card);
+  });
+  const chosenTotal = isParallel ? grandTotalParallel : grandTotalSequential;
+  el('resTotal').textContent = formatMinutes(chosenTotal) + ' (' + formatHours(chosenTotal) + ')';
+  if(grandTotalParallel !== grandTotalSequential){
+    const note = document.createElement('div');
+    note.style.cssText = 'background:#e8f4fd;border:1px solid #b3d4f5;border-radius:8px;padding:14px 20px;margin-bottom:10px;color:var(--dell-blue);font-size:0.92em;';
+    note.innerHTML = '<strong>Sequential total:</strong> ' + formatMinutes(grandTotalSequential) + ' (' + formatHours(grandTotalSequential) + ')'
+                   + ' &nbsp;|&nbsp; <strong>Parallel total:</strong> ' + formatMinutes(grandTotalParallel) + ' (' + formatHours(grandTotalParallel) + ')'
+                   + '<br><em>Parallel mode runs NSX Host VIB upgrades and ESXi/VxRail Manager upgrades concurrently within each domain — only the longer of the two is counted.</em>';
+    domainResultsDiv.appendChild(note);
+  }
+}
+function loadSummaryText(text){
+  try{
+    showError('err',''); showError('calcErr','');
+    parseAndRender(text);
+    calculateUpgradeTime();
+  }catch(e){ showError('err','Unable to parse summary: '+e.message); }
+}
+function clearAll(){
+  parsedState={sddc:'—',vxrail:'—',clusters:[]};
+  lastParsed = null;
+  if(el('vcfFile')) el('vcfFile').value='';
+  ['kpis','vcfActions','vcfActionsBottom','combinedLayout','v91Warning'].forEach(id=>{ const node=el(id); if(node) node.style.display='none'; });
+  el('vcfTable').querySelector('thead').innerHTML=''; el('vcfTable').querySelector('tbody').innerHTML='';
+  el('domainResults').innerHTML=''; el('resTotal').textContent='—'; showError('err',''); showError('calcErr','');
+}
+function cloneTableForEmail(table){
+  const cl=table.cloneNode(true);
+  cl.setAttribute('border','1'); cl.style.cssText='border-collapse:collapse;width:100%;margin-bottom:20px;';
+  cl.querySelectorAll('thead tr').forEach(r=>{r.style.backgroundColor='#0076CE';r.style.color='white';});
+  cl.querySelectorAll('th,td').forEach(c=>{c.style.border='1px solid #000';c.style.padding='8px';c.style.fontWeight='normal';});
+  cl.querySelectorAll('input,textarea').forEach(i=>{const t=document.createTextNode(i.value||i.placeholder||''); i.parentNode.replaceChild(t,i);});
+  cl.querySelectorAll('select').forEach(s=>{const t=document.createTextNode(s.value||''); s.parentNode.replaceChild(t,s);});
+  return cl;
+}
+function doCopyToEmail(){
+  const container=document.createElement('div');
+  container.innerHTML='<h2 style="color:#0076CE;">VCF Upgrade Planning Report</h2><hr><br>';
+  [['TC Template','tcTemplateTable'],['VCF Upgrade Planner','vcfTable'],['Verbal Confirmation Checks','verbalChecksTable'],['Issues & Escalations','issuesTable']].forEach(([title,id])=>{
+    container.innerHTML+='<h3 style="color:#0076CE;">'+title+'</h3>';
+    const tbl=el(id); if(tbl) container.appendChild(cloneTableForEmail(tbl));
+  });
+  const totalTime=el('resTotal').textContent;
+  const parallelMode=el('parallelToggle').checked?'Yes (NSX Host VIB &amp; ESXi/VxRail Mgr upgrades run in parallel within each domain)':'No (Sequential)';
+  container.innerHTML+='<h3 style="color:#0076CE;">Upgrade Calculator Summary</h3>';
+  container.innerHTML+='<table border="1" style="border-collapse:collapse;width:100%;margin-bottom:20px;"><tr style="background:#0076CE;color:white;"><th style="border:1px solid #000;padding:8px;font-weight:normal;">Item</th><th style="border:1px solid #000;padding:8px;font-weight:normal;">Value</th></tr><tr><td style="border:1px solid #000;padding:8px;">Total Estimated Time</td><td style="border:1px solid #000;padding:8px;">'+escapeHtml(totalTime)+'</td></tr><tr><td style="border:1px solid #000;padding:8px;">Parallel Upgrade</td><td style="border:1px solid #000;padding:8px;">'+parallelMode+'</td></tr></table>';
+  container.innerHTML+='<p style="color:#856404;background:#fff3cd;padding:12px;border-radius:6px;border:1px solid #ffc107;">&#9888; VCF on VxRail upgrades frequently encounter challenges. Depending on the size and complexity of the environment, additional hours should be included as contingency.</p>';
+  const htmlContent=container.innerHTML;
+  const textContent=container.innerText||container.textContent;
+  if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+    const item=new ClipboardItem({'text/html':new Blob([htmlContent],{type:'text/html'}),'text/plain':new Blob([textContent],{type:'text/plain'})});
+    navigator.clipboard.write([item]).then(()=>alert('Content copied to clipboard! You can now paste it into your email.')).catch(()=>fallbackCopy(textContent));
+  }else{ fallbackCopy(textContent); }
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  renderBundles(); initialiseVerbalChecks();
+  document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.section)));
+  el('vcfFile').addEventListener('change', async e=>{
+    const file=e.target.files && e.target.files[0]; if(!file) return;
+    const text=await file.text(); loadSummaryText(text);
+  });
+  el('pasteSample').addEventListener('click',()=>{
+    const text=prompt('Paste the VCF summary text here:'); if(text!==null && text.trim()) loadSummaryText(text);
+  });
+  el('vcfClear').addEventListener('click',clearAll);
+  el('targetProfile').addEventListener('change',()=>{
+    const warning = el('v91Warning');
+    if(el('targetProfile').value === 'v91') {
+      warning.style.display='block';
+    } else {
+      warning.style.display='none';
+    }
+    if(lastParsed) renderTable(lastParsed);
+  });
+  el('parallelToggle').addEventListener('change',calculateUpgradeTime);
+  el('copyToEmail').addEventListener('click',doCopyToEmail);
+  el('copyToEmailBottom').addEventListener('click',doCopyToEmail);
+});
+</script>
+</body>
+</html>
+
+							<script>
+                            	
+							</script>
+                        </body>
+                        </html>
+                    
