@@ -1,0 +1,72 @@
+8.0.380 for 8.x:
+
+Download bundle:
+
+https://dl.dell.com/downloads/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip
+
+
+Name composite bundle: 
+
+
+
+/nfs/vmware/vcf/nfs-mount/bundle/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip
+
+
+
+PBM: 
+
+
+
+/nfs/vmware/vcf/nfs-mount/bundle/vxrailPartnerBundleMetadata.json 
+
+
+
+-Update permissions: 
+
+
+
+chmod 777 /nfs/vmware/vcf/nfs-mount/bundle/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip
+
+
+
+chown vcf_lcm:vcf /nfs/vmware/vcf/nfs-mount/bundle/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip
+
+
+
+chmod 777 /nfs/vmware/vcf/nfs-mount/bundle/vxrailPartnerBundleMetadata.json 
+
+
+
+chown vcf_lcm:vcf /nfs/vmware/vcf/nfs-mount/bundle/vxrailPartnerBundleMetadata.json 
+
+
+
+Run the below commands to upload the bundle: 
+
+
+
+cp -p /nfs/vmware/vcf/nfs-mount/bundle/*.json /nfs/vmware/vcf/nfs-mount/bundle/depot/local/ 
+
+
+
+cp -p /nfs/vmware/vcf/nfs-mount/bundle/7H9J9_VxRail-8.0.380-Composite-Upgrade-Slim-Package-for-8.0.x.zip /nfs/vmware/vcf/nfs-mount/bundle/depot/local/bundles/ 
+
+
+
+chmod -R 777 /nfs/vmware/vcf/nfs-mount/bundle/depot/local/ 
+
+
+
+chown -R vcf_lcm:vcf /nfs/vmware/vcf/nfs-mount/bundle/depot/local/ 
+
+
+
+curl -X PUT http://localhost/lcm/bundle/upload/partnerBundleMetadata -H "Content-Type: application/json" 
+
+
+
+curl -X PUT http://localhost/lcm/bundle/upload/partnerBundle/VXRAIL8-0-380-295967797H9J9_VxRail-8-0-380-Composite-Upgrade-Slim-Package-for-8-0-x-zip -H "Content-Type:application/json" 
+
+
+VXRAIL8-0-370-29422450C375Y_VXRAIL_COMPOSITE-SLIM-8-0-370-29422450_for_8-0-x-zip
+VXRAIL8-0-380-295967797H9J9_VxRail-8-0-380-Composite-Upgrade-Slim-Package-for-8-0-x-zip
