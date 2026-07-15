@@ -1,0 +1,1 @@
+Copying C:\bin\> lcm-bundle-transfer-util.bat --listBundles --productVersion 5.2.3.0 --type PATCH --depotDownloadToken RJ8oGinAUJiJtsmfSoo7e1uawkYcXP7G 
